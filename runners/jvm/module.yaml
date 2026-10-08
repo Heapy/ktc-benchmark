@@ -1,0 +1,7 @@
+product: jvm/app
+dependencies:
+  - //benchmarks
+plugins:
+  benchmark:
+    enabled: true
+    platform: jvm

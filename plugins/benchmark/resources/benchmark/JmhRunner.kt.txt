@@ -1,0 +1,64 @@
+package io.heapy.ktc.plugins.benchmark.generated
+
+import java.io.File
+import java.nio.file.Files
+import java.nio.file.Path
+import javax.tools.ToolProvider
+import org.openjdk.jmh.generators.core.BenchmarkGenerator
+import org.openjdk.jmh.generators.core.FileSystemDestination
+import org.openjdk.jmh.generators.reflection.RFGeneratorSource
+
+/** Compiled into the JVM benchmark module; runs outside the Toolchain plugin JVM. */
+internal fun runJmh(args: Array<String>, benchmarkClasses: List<String>) {
+    require(args.size == 1) { "Expected a benchmark configuration file" }
+    require(benchmarkClasses.isNotEmpty()) { "No @State benchmark classes found" }
+    val configFile = Path.of(args[0]).toAbsolutePath()
+    val config = Files.readAllLines(configFile).filter { ':' in it }
+        .groupBy({ it.substringBefore(':') }, { it.substringAfter(':') })
+    fun value(key: String) = config.getValue(key).single()
+    val root = configFile.parent.resolve("jmh-harness").toFile()
+    check(!root.exists() || root.deleteRecursively()) { "Cannot remove old JMH harness: $root" }
+    val sourceDir = File(root, "sources").apply { mkdirs() }
+    val classesDir = File(root, "classes").apply { mkdirs() }
+    val destination = FileSystemDestination(classesDir, sourceDir)
+    val source = RFGeneratorSource()
+    benchmarkClasses.forEach { source.processClasses(Class.forName(it)) }
+    val generator = BenchmarkGenerator()
+    generator.generate(source, destination)
+    generator.complete(source, destination)
+    check(!destination.hasErrors()) { "JMH generation failed:\n${destination.errors.joinToString("\n")}" }
+    val compiler = checkNotNull(ToolProvider.getSystemJavaCompiler()) {
+        "JMH needs a full JDK. Configure settings.jvm.jdk in the JVM runner module."
+    }
+    val classpath = System.getProperty("java.class.path")
+    val sources = sourceDir.walkTopDown().filter { it.isFile && it.extension == "java" }.toList()
+    check(sources.isNotEmpty()) { "JMH found no @Benchmark methods" }
+    compiler.getStandardFileManager(null, null, null).use { manager ->
+        val units = manager.getJavaFileObjectsFromFiles(sources)
+        check(compiler.getTask(null, manager, null,
+            listOf("-classpath", classpath, "-d", classesDir.path, "-proc:none"), null, units).call()) {
+            "Compiling the generated JMH harness failed"
+        }
+    }
+    val java = Path.of(System.getProperty("java.home"), "bin",
+        if (System.getProperty("os.name").startsWith("Windows")) "java.exe" else "java")
+    val command = mutableListOf(java.toString(), "-cp", classesDir.path + File.pathSeparator + classpath,
+        "org.openjdk.jmh.Main", "-rf", "json", "-rff", value("reportFile"),
+        "-wi", value("warmups"), "-i", value("iterations"),
+        "-w", value("iterationTime") + value("iterationTimeUnit"),
+        "-r", value("iterationTime") + value("iterationTimeUnit"),
+        "-f", value("jvmForks"), "-t", value("jvmThreads"),
+        "-bm", value("mode"), "-tu", value("outputTimeUnit"), "-foe", "true")
+    config["include"]?.let { command += it }
+    config["exclude"]?.let { command += listOf("-e", it.joinToString("|", "(?:", ")")) }
+    config["param"]?.groupBy({ it.substringBefore('=') }, { it.substringAfter('=') })?.forEach { (key, values) ->
+        command += listOf("-p", "$key=${values.joinToString(",")}")
+    }
+    config["jvmArg"]?.forEach { command += listOf("-jvmArgsAppend", it) }
+    val process = ProcessBuilder(command).directory(configFile.parent.toFile()).inheritIO().start()
+    try {
+        check(process.waitFor() == 0) { "JMH benchmark execution failed" }
+    } finally {
+        if (process.isAlive) process.destroyForcibly()
+    }
+}

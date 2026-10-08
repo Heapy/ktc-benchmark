@@ -1,0 +1,7 @@
+product: wasm-wasi/app
+dependencies:
+  - //benchmarks
+plugins:
+  benchmark:
+    enabled: true
+    platform: wasmWasi

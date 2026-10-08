@@ -1,0 +1,7 @@
+product: js/app
+dependencies:
+  - //benchmarks
+plugins:
+  benchmark:
+    enabled: true
+    platform: js

@@ -1,0 +1,22 @@
+dependencies:
+  - org.jetbrains.kotlinx:kotlinx-benchmark-runtime:0.5.0
+settings:
+  kotlin:
+    ksp:
+      processors:
+        - ./
+    allOpen:
+      enabled: true
+      annotations: [org.openjdk.jmh.annotations.State]
+dependencies@jvm:
+  - org.openjdk.jmh:jmh-generator-reflection:1.37
+settings@wasmJs:
+  kotlin:
+    ksp:
+      processorOptions:
+        ktc.benchmark.backend: wasm
+settings@wasmWasi:
+  kotlin:
+    ksp:
+      processorOptions:
+        ktc.benchmark.backend: wasm

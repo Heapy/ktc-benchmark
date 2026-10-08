@@ -1,0 +1,7 @@
+product: wasm-js/app
+dependencies:
+  - //benchmarks
+plugins:
+  benchmark:
+    enabled: true
+    platform: wasmJs

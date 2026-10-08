@@ -1,0 +1,18 @@
+tasks:
+  benchmark:
+    action: !io.heapy.ktc.plugins.benchmark.runBenchmark
+      projectDir: ${project.rootDir}
+      moduleName: ${module.name}
+      settings: ${pluginSettings}
+      outputDir: ${taskOutputDir}
+      smoke: false
+  benchmarkSmoke:
+    action: !io.heapy.ktc.plugins.benchmark.runBenchmark
+      projectDir: ${project.rootDir}
+      moduleName: ${module.name}
+      settings: ${pluginSettings}
+      outputDir: ${taskOutputDir}
+      smoke: true
+commands:
+  - benchmark
+  - benchmarkSmoke

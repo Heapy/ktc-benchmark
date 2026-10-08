@@ -1,0 +1,7 @@
+product: linux/app
+dependencies:
+  - //benchmarks
+plugins:
+  benchmark:
+    enabled: true
+    platform: linuxX64

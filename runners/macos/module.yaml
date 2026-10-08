@@ -1,0 +1,7 @@
+product: macos/app
+dependencies:
+  - //benchmarks
+plugins:
+  benchmark:
+    enabled: true
+    platform: macosArm64

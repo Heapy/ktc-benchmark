@@ -1,0 +1,6 @@
+modules:
+  - benchmarks
+  - plugins/benchmark
+  - runners/*
+plugins:
+  - //plugins/benchmark

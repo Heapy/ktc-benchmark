@@ -1,0 +1,7 @@
+product: windows/app
+dependencies:
+  - //benchmarks
+plugins:
+  benchmark:
+    enabled: true
+    platform: mingwX64

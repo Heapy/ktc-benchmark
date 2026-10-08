@@ -1,0 +1,8 @@
+product: jvm/amper-plugin
+pluginInfo:
+  id: benchmark
+  settingsClass: io.heapy.ktc.plugins.benchmark.BenchmarkSettings
+dependencies:
+  - com.google.devtools.ksp:symbol-processing-api:2.3.12
+  - com.squareup:kotlinpoet:1.3.0
+  - org.jetbrains.kotlinx:kotlinx-serialization-json:1.11.0

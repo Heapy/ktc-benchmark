@@ -1,0 +1,12 @@
+ktc-benchmark
+Copyright 2026 Heapy contributors
+
+The source generator in plugins/benchmark/src/generator/SuiteSourceGenerator.kt
+and AnnotationsValidator.kt is adapted from Kotlin/kotlinx-benchmark v0.5.0,
+commit 6181dd9623dba5311131c97bd3471a620e080189.
+Copyright JetBrains s.r.o. and contributors, licensed under Apache License 2.0.
+https://github.com/Kotlin/kotlinx-benchmark/tree/v0.5.0
+
+Modifications: package relocation, generated entry-point namespace, KSP host
+integration, deterministic multi-round processing and safer source literals.
+Runtime libraries and JMH are resolved as dependencies, not redistributed here.
