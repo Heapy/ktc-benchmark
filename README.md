@@ -33,7 +33,7 @@ generator attribution.
 ./kotlin do benchmarkSmoke -m js
 ./kotlin do benchmarkSmoke -m wasm-js
 ./kotlin do benchmarkSmoke -m wasm-wasi
-python3 scripts/verify-reports.py jvm macos js wasm-js wasm-wasi
+kotlinr scripts/verify-reports.main.kts jvm macos js wasm-js wasm-wasi
 ```
 
 On Linux, use `-m linux`. On Windows use `kotlin.bat` and `-m windows`.
@@ -230,3 +230,11 @@ Upstream references: [benchmark runtime and generator](https://github.com/Kotlin
 [Kotlin Toolchain](https://github.com/JetBrains/kotlin-toolchain/tree/v0.13.0).
 
 See [verification evidence](docs/verification.md) for locally executed checks and CI-only coverage.
+
+## Running verification scripts
+
+The `.main.kts` scripts require JDK 25 and Kotlin 2.4.21+ (`kotlinr` on `PATH`).
+Run them with `kotlinr scripts/<name>.main.kts` from the repository root.
+The Kotlin Toolchain `./kotlin` command is a separate executable. CI installs the script runner
+through `.github/actions/setup-kotlin-script`; the first script run compiles the script and
+resolves any pinned Maven dependencies. Later runs use the local script cache.

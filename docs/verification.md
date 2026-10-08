@@ -11,10 +11,10 @@ kotlinx-benchmark 0.5.0, JMH 1.37, JDK 25.0.4 and Node.js 24.18.0.
 - `./kotlin do benchmarkSmoke -m js`: 6 parameterized benchmark results.
 - `./kotlin do benchmarkSmoke -m wasm-js`: 6 parameterized benchmark results.
 - `./kotlin do benchmarkSmoke -m wasm-wasi`: 6 parameterized benchmark results.
-- `python3 scripts/verify-reports.py jvm macos js wasm-js wasm-wasi`: all
+- `kotlinr scripts/verify-reports.main.kts jvm macos js wasm-js wasm-wasi`: all
   benchmark names, parameter combinations, warmup/measurement counts, units and
   finite raw samples matched the expected fixture.
-- `python3 scripts/test-integration.py`: independently copied consumer passed
+- `kotlinr scripts/test-integration.main.kts`: independently copied consumer passed
   with an anchored name filter, overridden parameter and spaces in its directory.
   A mixed passing/failing JS suite returned failure and left no successful report
   or metadata from the previous invocation.
