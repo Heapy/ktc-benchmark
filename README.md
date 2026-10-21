@@ -62,7 +62,7 @@ From your consumer project, install the tagged source release with
 [ktc-plugins](https://github.com/Heapy/ktc-plugins):
 
 ```sh
-./ktc-plugins add Heapy/ktc-benchmark --tag v0.1.0
+./ktc-plugins add Heapy/ktc-benchmark --tag v0.1.1
 ```
 
 Then configure the benchmark library and runner modules as shown below. Enable

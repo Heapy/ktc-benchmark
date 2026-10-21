@@ -51,8 +51,8 @@ internal fun runJmh(args: Array<String>, benchmarkClasses: List<String>) {
         "-bm", value("mode"), "-tu", value("outputTimeUnit"), "-foe", "true")
     config["include"]?.let { command += it }
     config["exclude"]?.let { command += listOf("-e", it.joinToString("|", "(?:", ")")) }
-    config["param"]?.groupBy({ it.substringBefore('=') }, { it.substringAfter('=') })?.forEach { (key, values) ->
-        command += listOf("-p", "$key=${values.joinToString(",")}")
+    config["param"]?.groupBy({ it.substringBefore('=') }, { it.substringAfter('=') })?.forEach { entry ->
+        command += listOf("-p", "${entry.key}=${entry.value.joinToString(",")}")
     }
     config["jvmArg"]?.forEach { command += listOf("-jvmArgsAppend", it) }
     val process = ProcessBuilder(command).directory(configFile.parent.toFile()).inheritIO().start()

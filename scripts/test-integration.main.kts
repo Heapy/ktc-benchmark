@@ -57,6 +57,28 @@ fun toolchain(project: File, vararg arguments: String, succeeds: Boolean = true,
     return result.output
 }
 
+temporary("ktc benchmark name based destructuring ") { root ->
+    for (name in listOf("plugins", "benchmarks", "runners/jvm", "kotlin", "kotlin.bat", "LICENSE", "NOTICE")) copy(repo.resolve(name), root.resolve(name))
+    write(root, "project.yaml", "modules: [benchmarks, plugins/benchmark, runners/jvm]\nplugins: [//plugins/benchmark]\n")
+    root.resolve("benchmarks/module.yaml").appendText("""
+
+        settings@jvm:
+          kotlin:
+            freeCompilerArgs: ['-Xname-based-destructuring=complete']
+    """.trimIndent() + "\n")
+    root.resolve("runners/jvm/module.yaml").appendText("    includes: ['^sample\\.CollectionBenchmark\\.loop$']\n    params:\n      size: ['32', '128']\n")
+    toolchain(root, "do", "benchmarkSmoke", "-m", "jvm")
+    val report = root.resolve("build/tasks/_jvm_benchmarkSmoke@benchmark/results.json")
+    val results = Json.parseToJsonElement(report.readText()).jsonArray
+    check(results.size == 2 && results.all {
+        it.jsonObject.getValue("benchmark").jsonPrimitive.content == "sample.CollectionBenchmark.loop"
+    }) { results }
+    check(results.map {
+        it.jsonObject.getValue("params").jsonObject.getValue("size").jsonPrimitive.content
+    }.toSet() == setOf("32", "128")) { results }
+    println("JVM consumer: name-based destructuring and multiple parameter overrides passed")
+}
+
 temporary("ktc benchmark consumer ") { root ->
     for (name in listOf("plugins", "benchmarks", "runners/js", "kotlin", "kotlin.bat", "LICENSE", "NOTICE")) copy(repo.resolve(name), root.resolve(name))
     write(root, "project.yaml", "modules: [benchmarks, plugins/benchmark, runners/js]\nplugins: [//plugins/benchmark]\n")
