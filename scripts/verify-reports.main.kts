@@ -1,6 +1,6 @@
 #!/usr/bin/env kotlinr
 // Validate real benchmark results without asserting timings. Arguments: module names (default: jvm).
-@file:DependsOn("org.jetbrains.kotlinx:kotlinx-serialization-json-jvm:1.11.0")
+@file:DependsOn("org.jetbrains.kotlinx:kotlinx-serialization-json-jvm:1.12.0")
 
 import kotlinx.serialization.json.*
 

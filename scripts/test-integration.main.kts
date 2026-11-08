@@ -1,5 +1,5 @@
 #!/usr/bin/env kotlinr
-@file:DependsOn("org.jetbrains.kotlinx:kotlinx-serialization-json-jvm:1.11.0")
+@file:DependsOn("org.jetbrains.kotlinx:kotlinx-serialization-json-jvm:1.12.0")
 
 import kotlinx.serialization.json.*
 import java.io.File

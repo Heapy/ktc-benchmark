@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.2.0 — 2026-11-08
+
+- Update KotlinPoet to 2.4.0, KSP API and processor runtime to 2.3.13, and kotlinx.serialization to 1.12.0.
+- Keep kotlinx-benchmark 0.5.0 and JMH 1.37; benchmark commands and report format are unchanged.
+
 ## 0.1.2 — 2026-10-21
 
 - Forward child stdout and stderr through the parent Kotlin Toolchain task logger.

@@ -3,6 +3,7 @@ dependencies:
 settings:
   kotlin:
     ksp:
+      version: 2.3.13
       processors:
         - ./
     allOpen:
